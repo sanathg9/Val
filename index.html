@@ -215,7 +215,7 @@ function check(i){
     scoreEl.innerText=`Score: ${score} / 4`;
     content.innerHTML=`<div class="correct-heart">❤️</div>`;
   }else{
-    showPopup("😈 Wrong! Try again 😒");
+    showPopup("😈Wrong!😒");
   }
   setTimeout(()=>{
     qIndex++;
@@ -272,20 +272,7 @@ function yes() {
         (P.S. There is a secret message below 👀 <br>
         for secret message to unlock u must answer this first)
       </p>
-
-      <button onclick="unlockSecret()">Tap here 💌</button>
-
-      <div id="lock" style="display:none;">
-        <p>How many months we are in a relationship? 🥹</p>
-        <input id="pass" placeholder="Enter number ❤️">
-        <br><br>
-        <button onclick="checkPassword()">Unlock 💖</button>
-      </div>
-
-      <p id="secret" style="display:none; margin-top:15px; color:#ff4d6d;">
-        Even when life gets messy — I still choose you.
-        Every time. Forever. ♾️❤️
-      </p>
+      <button onclick="secretPage()">Tap here 💌</button>
     </div>
   `;
   createAnimations();
