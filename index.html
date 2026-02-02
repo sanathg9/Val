@@ -116,8 +116,8 @@ input{
 /* Floating text */
 .float-text{
   font-size:22px;
-  color:#ff4d6d;
-  animation:floatText 3s ease-in-out infinite;
+  color:#000000;
+  animation:floatText 2s ease-in-out infinite;
 }
 
 @keyframes floatText{
@@ -130,10 +130,54 @@ input{
   font-size:60px;
   animation:pop .6s ease;
 }
+
+/* Typed name */
+.typed-love{
+  font-weight: 700;      /* bold */
+  font-size: 20px;       /* slightly bigger */
+  color: #ff4d6d;        /* romantic pink */
+  margin-top: 10px;
+}
+
+#hendthiText{
+  font-size: 28px;
+  font-weight: 700;
+  color: #ff4d6d;
+  margin-bottom: 10px;
+}
+
 </style>
 </head>
 
 <body>
+
+    <div id="enterScreen" style="
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg,#ff758c,#ff7eb3);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+">
+  <div style="text-align:center;">
+    <h1 style="color:#fff; margin-bottom:20px;">
+      💖 Welcome 💖
+    </h1>
+    <button onclick="enterWorld()" style="
+      padding:18px 35px;
+      font-size:18px;
+      border:none;
+      border-radius:30px;
+      background:#fff;
+      color:#ff4d6d;
+      font-weight:700;
+      cursor:pointer;
+    ">
+      Enter to Sanath World 🌍💘
+    </button>
+  </div>
+</div>
 
 <div class="animations" id="animations"></div>
 
@@ -149,7 +193,37 @@ input{
   </div>
 </div>
 
+<audio id="song1" loop
+  src="https://raw.githubusercontent.com/sanathg9/Val/main/song1.mp3">
+</audio>
+
+<audio id="song2"
+  src="https://raw.githubusercontent.com/sanathg9/Val/main/song2.mp3">
+</audio>
+
+<audio id="song3" loop
+  src="https://raw.githubusercontent.com/sanathg9/Val/main/song3.mp3">
+</audio>
+
 <script>
+    
+function enterWorld(){
+  document.getElementById("enterScreen").style.display = "none";
+  song1.volume = 0.6;
+  song1.play();     // 🎵 starts here
+}
+
+const song1 = document.getElementById("song1");
+const song2 = document.getElementById("song2");
+const song3 = document.getElementById("song3");
+
+function stopAllSongs(){
+  [song1, song2, song3].forEach(song => {
+    song.pause();
+    song.currentTime = 0;
+  });
+}
+
 /* Background hearts */
 function createAnimations(){
   const a=document.getElementById("animations");
@@ -178,25 +252,26 @@ let score=0,qIndex=0;
 const questions=[
   {
     text:"What is the first thing I brought you? 💝",
-    options:["🍫 Chocolates","🍦 Ice Creams","⌚ Watch"],
+    options:["🍫Chocolates🍫","🍦Ice Creams🍦","⌚Watch⌚"],
     correct:0
   },
   {
     text:"When I first said I love you 💌",
-    options:["👨‍💻 Working","🚆 Travelling","🎬 Movie"],
+    options:["👨‍💻Working👨‍💻","🚆Travelling🚆","🎬Movie🎬"],
     correct:1
   },
   {
     text:"Why did I fall for you? 🥹",
-    options:["💔 Loneliness","🙃 No one else","🧸 YOU"],
+    options:["💔Loneliness","👧I didnt find any other girl👱‍♀️","🧸YOU🙈"],
     correct:2
   },
   {
-    text:"Where was this photo taken? 📸",
-    image:"PASTE_IMAGE_LINK_HERE",
-    options:["🏨 Restaurant","🏠 Room","🏫 College"],
-    correct:0
-  }
+  text:"Where was this photo taken? 📸",
+  image:"https://github.com/sanathg9/Val/blob/main/sb.jpg.jpeg?raw=true",
+  options:["🏨Restaurant🏨","🏠Room🏠","🏫College🏫"],
+  correct:0
+}
+
 ];
 
 function loadQuestion(){
@@ -219,7 +294,13 @@ function check(i){
   }
   setTimeout(()=>{
     qIndex++;
-    qIndex<questions.length?loadQuestion():askValentine();
+    if(qIndex < questions.length){
+    loadQuestion();
+    } else {
+    stopAllSongs();
+    song2.play();
+    askValentine();
+    }
   },1000);
 }
 
@@ -254,71 +335,85 @@ function typeText(el,text,speed=80,cb){
 
 /* YES PAGE */
 function yes() {
-  document.body.innerHTML = `
-    <div class="animations" id="animations"></div>
-    <div class="box">
-      <h2>💖 She Said YES 💖</h2>
-      <p>
-        From silly fights to endless laughs,<br>
-        you became my favorite part of every day 🥹❤️
-      </p>
-      <p>
-        I may not be perfect,<br>
-        but choosing you will always be my best decision.
-      </p>
-      <p><strong id="typedName"></strong></p>
+  app.innerHTML = `
+    <h2>💖 She Said YES 💖</h2>
 
-      <p style="font-size:14px; opacity:0.7;">
-        (P.S. There is a secret message below 👀 <br>
-        for secret message to unlock u must answer this first)
-      </p>
-      <button onclick="secretPage()">Tap here 💌</button>
-    </div>
+    <p id="loveText">
+      From silly fights to endless laughs,<br>
+      you became my favorite part of every day 🥹❤️
+    </p>
+
+    <p id="typedName" class="typed-love"></p>
+
+    <p>
+      Naanu sari ilde irbodu,<br>
+      bt ninna choose madiddu you will always be my best decision.
+    </p>
+
+    <p style="font-size:14px; opacity:0.7;">
+      (P.S. There is a secret message below 👀 <br>
+      secret message nodbek andre frst ans)
+    </p>
+
+    <button onclick="secretPage()">Tap here 💌</button>
   `;
-  createAnimations();
-  confettiExplosion();
 
-  typeText(
-    document.getElementById("typedName"),
-    "Thank you for being my Valentine Bhuuu💕",
-    80
-  );
+  createAnimations();
+
+  // 🔥 TYPE AFTER first paragraph finishes
+  setTimeout(() => {
+    typeText(
+      document.getElementById("typedName"),
+      "Thank you for being my Valentine Bhuuu💕",
+      80
+    );
+  }, 1200); // delay so it feels natural
 }
+
 
 /* SECRET PAGE */
 function secretPage(){
-  document.body.innerHTML=`
-    <div class="box">
-      <h2>🔐 Secret Lock</h2>
-      <p>How many months we are in a relationship? 🥹</p>
-      <input id="pass">
-      <br><br>
-      <button onclick="checkPass()">Unlock 💖</button>
-    </div>
-  `;
+    stopAllSongs();
+    song3.play();
+
+    app.innerHTML = `
+        <h2>🔐 Secret Lock</h2>
+        <p>How many months we are in a relationship? 🥹</p>
+        <input id="pass">
+        <br><br>
+        <button onclick="checkPass()">Unlock 💖</button>
+    `;
 }
 
 function checkPass(){
-  if(pass.value==="4"){
+  const passInput = document.getElementById("pass");
+  if(passInput.value === "4"){
     finalMessage();
-  }else{
-    showPopup("😈 Think again");
+  } else {
+    showPopup("😈Think again😒");
   }
 }
 
 /* FINAL */
 function finalMessage(){
-  document.body.innerHTML=`
-    <div class="animations" id="animations"></div>
-    <div class="box">
-      <h2 class="float-text">Hendthi maaa…</h2>
-      <p class="float-text">even in every lifetime, I choose you 💖♾️</p>
-    </div>
+  app.innerHTML = `
+    <h2 id="hendthiText"></h2>
+    <p class="float-text">even in every lifetime, I choose you 💖♾️</p>
   `;
+
   createAnimations();
+
+  // slow typing ONLY for "Hendthii maa"
+  typeText(
+    document.getElementById("hendthiText"),
+    "Hendthii maa…",
+    120
+  );
 }
 
+
 loadQuestion();
+  
 </script>
 
 </body>
