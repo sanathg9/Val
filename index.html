@@ -17,7 +17,6 @@ body {
   overflow: hidden;
 }
 
-/* Animations */
 .animations {
   position: fixed;
   inset: 0;
@@ -49,7 +48,6 @@ body {
   to { transform: translateY(110vh) rotate(360deg); }
 }
 
-/* Box */
 .box {
   background: white;
   border-radius: 18px;
@@ -77,6 +75,12 @@ button {
 
 button:hover {
   transform: scale(1.07);
+}
+
+img {
+  width: 100%;
+  border-radius: 12px;
+  margin: 15px 0;
 }
 
 input {
@@ -199,6 +203,7 @@ const questions = [
   },
   {
     text: "Where was this photo taken? 📸",
+    image: "PASTE_YOUR_IMAGE_LINK_HERE",
     options: ["🏨 Restaurant", "🏠 Room", "🏫 College"],
     correct: 1
   }
@@ -207,6 +212,7 @@ const questions = [
 function loadQuestion() {
   const q = questions[qIndex];
   let html = `<p>${q.text}</p>`;
+  if (q.image) html += `<img src="${q.image}">`;
   q.options.forEach((o, i) => {
     html += `<button onclick="check(${i})">${o}</button>`;
   });
@@ -219,84 +225,103 @@ function check(i) {
     scoreEl.innerText = `Score: ${score} / 4`;
   } else {
     popup.style.display = "flex";
-    setTimeout(() => popup.style.display = "none", 700);
+    setTimeout(() => popup.style.display = "none", 5000);
   }
 
   setTimeout(() => {
     qIndex++;
-    qIndex < questions.length ? loadQuestion() : showGift();
-  }, 800);
+    qIndex < questions.length ? loadQuestion() : askValentine();
+  }, 900);
 }
 
 const content = document.getElementById("content");
 const scoreEl = document.getElementById("score");
 const popup = document.getElementById("popup");
 
-/* Gift */
-function showGift() {
+/* Valentine question */
+function askValentine() {
   app.innerHTML = `
-    <h2>🎁 One last step</h2>
-    <p>Answer this to unlock 💞</p>
-    <button onclick="passwordLock()">Continue 🔐</button>
+    <h2>Will you be my Valentine forever? 💖</h2>
+    <button onclick="yes()">YES 😍</button>
+    <button id="noBtn">NO 🙈</button>
   `;
-}
 
-/* Password */
-function passwordLock() {
-  app.innerHTML = `
-    <h2>🔐 Secret Question</h2>
-    <p>How many months we are in a relationship? 🥹</p>
-    <input id="pass" placeholder="Enter number ❤️">
-    <br><br>
-    <button onclick="checkPassword()">Unlock 💖</button>
-  `;
-}
-
-function checkPassword() {
-  const val = document.getElementById("pass").value.trim();
-  if (val === "4") {
-    finalSurprise();
-  } else {
-    alert("😈 Wrong again, think harder!");
-  }
+  const noBtn = document.getElementById("noBtn");
+  noBtn.addEventListener("mouseover", () => {
+    noBtn.style.position = "fixed";
+    noBtn.style.left = Math.random() * 85 + "vw";
+    noBtn.style.top = Math.random() * 85 + "vh";
+  });
 }
 
 /* Typing effect */
-function typeText(el, text, speed = 80, cb) {
+function typeText(el, text, speed = 80) {
   let i = 0;
   el.innerHTML = "";
   const t = setInterval(() => {
     el.innerHTML += text.charAt(i);
     i++;
-    if (i >= text.length) {
-      clearInterval(t);
-      if (cb) cb();
-    }
+    if (i >= text.length) clearInterval(t);
   }, speed);
 }
 
-/* Final */
-function finalSurprise() {
+/* YES page */
+function yes() {
   document.body.innerHTML = `
     <div class="animations" id="animations"></div>
     <div class="box">
-      <h2 id="name"></h2>
-      <p id="msg"></p>
+      <h2>💖 She Said YES 💖</h2>
+      <p>
+        From silly fights to endless laughs,<br>
+        you became my favorite part of every day 🥹❤️
+      </p>
+      <p>
+        I may not be perfect,<br>
+        but choosing you will always be my best decision.
+      </p>
+      <p><strong id="typedName"></strong></p>
+
+      <p style="font-size:14px; opacity:0.7;">
+        (P.S. There is a secret message below 👀 <br>
+        for secret message to unlock u must answer this first)
+      </p>
+
+      <button onclick="unlockSecret()">Tap here 💌</button>
+
+      <div id="lock" style="display:none;">
+        <p>How many months we are in a relationship? 🥹</p>
+        <input id="pass" placeholder="Enter number ❤️">
+        <br><br>
+        <button onclick="checkPassword()">Unlock 💖</button>
+      </div>
+
+      <p id="secret" style="display:none; margin-top:15px; color:#ff4d6d;">
+        Even when life gets messy — I still choose you.
+        Every time. Forever. ♾️❤️
+      </p>
     </div>
   `;
   createAnimations();
   confettiExplosion();
 
-  const nameEl = document.getElementById("name");
-  const msgEl = document.getElementById("msg");
+  typeText(
+    document.getElementById("typedName"),
+    "Thank you for being my Valentine Bhuuu💕",
+    80
+  );
+}
 
-  typeText(nameEl, "BHUUU 💖", 120, () => {
-    typeText(
-      msgEl,
-      "Hendthi maaa… even in every lifetime, I choose you 💖♾️",
-      60
-    );
-  });
+function unlockSecret() {
+  document.getElementById("lock").style.display = "block";
+}
+
+function checkPassword() {
+  const val = document.getElementById("pass").value.trim();
+  if (val === "4") {
+    document.getElementById("secret").style.display = "block";
+  } else {
+    alert("😈 Wrong! Think again!");
+  }
 }
 
 loadQuestion();
