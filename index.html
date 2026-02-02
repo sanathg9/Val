@@ -6,122 +6,129 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #ff758c, #ff7eb3);
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+body{
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#ff758c,#ff7eb3);
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
 }
 
-.animations {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
+.animations{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
 }
 
-.heart, .petal {
-  position: absolute;
+.heart,.petal{
+  position:absolute;
 }
 
-.heart {
-  font-size: 20px;
-  animation: floatUp linear infinite;
+.heart{
+  font-size:22px;
+  animation:floatUp linear infinite;
 }
 
-.petal {
-  font-size: 22px;
-  animation: fallDown linear infinite;
+.petal{
+  font-size:22px;
+  animation:fallDown linear infinite;
 }
 
-@keyframes floatUp {
-  from { transform: translateY(100vh); opacity: 1; }
-  to { transform: translateY(-10vh); opacity: 0; }
+@keyframes floatUp{
+  from{transform:translateY(100vh);opacity:1}
+  to{transform:translateY(-10vh);opacity:0}
 }
 
-@keyframes fallDown {
-  from { transform: translateY(-10vh) rotate(0); }
-  to { transform: translateY(110vh) rotate(360deg); }
+@keyframes fallDown{
+  from{transform:translateY(-10vh) rotate(0)}
+  to{transform:translateY(110vh) rotate(360deg)}
 }
 
-.box {
-  background: white;
-  border-radius: 18px;
-  padding: 25px;
-  max-width: 420px;
-  width: 90%;
-  text-align: center;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-  z-index: 1;
+.box{
+  background:#fff;
+  border-radius:18px;
+  padding:25px;
+  width:90%;
+  max-width:420px;
+  text-align:center;
+  box-shadow:0 15px 30px rgba(0,0,0,.25);
+  z-index:1;
 }
 
-button {
-  width: 90%;
-  max-width: 300px;
-  padding: 14px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 25px;
-  background: #ff4d6d;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.25s;
+button{
+  width:90%;
+  max-width:300px;
+  padding:14px;
+  margin:8px 0;
+  border:none;
+  border-radius:25px;
+  background:#ff4d6d;
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+  transition:.25s;
 }
 
-button:hover {
-  transform: scale(1.07);
+button:hover{transform:scale(1.07)}
+
+img{
+  width:100%;
+  border-radius:12px;
+  margin:15px 0;
 }
 
-img {
-  width: 100%;
-  border-radius: 12px;
-  margin: 15px 0;
+input{
+  padding:12px;
+  width:80%;
+  border-radius:12px;
+  border:1px solid #ccc;
+  font-size:16px;
 }
 
-input {
-  padding: 12px;
-  width: 80%;
-  border-radius: 12px;
-  border: 1px solid #ccc;
-  font-size: 16px;
+/* POPUP */
+.popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
 }
 
-/* Popup */
-.popup {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
+.popup-box{
+  background:#fff;
+  padding:25px 30px;
+  border-radius:18px;
+  text-align:center;
+  animation:pop .4s ease;
 }
 
-.popup-box {
-  background: white;
-  padding: 25px;
-  border-radius: 18px;
+@keyframes pop{
+  from{transform:scale(.6);opacity:0}
+  to{transform:scale(1);opacity:1}
 }
 
-/* Confetti */
-.confetti {
-  position: fixed;
-  width: 10px;
-  height: 10px;
-  top: -10px;
-  animation: confettiFall linear forwards;
+/* Floating text */
+.float-text{
+  font-size:22px;
+  color:#ff4d6d;
+  animation:floatText 3s ease-in-out infinite;
 }
 
-@keyframes confettiFall {
-  to {
-    transform: translateY(110vh) rotate(720deg);
-    opacity: 0;
-  }
+@keyframes floatText{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-15px)}
+}
+
+/* Correct heart */
+.correct-heart{
+  font-size:60px;
+  animation:pop .6s ease;
 }
 </style>
 </head>
@@ -138,190 +145,161 @@ input {
 
 <div class="popup" id="popup">
   <div class="popup-box">
-    <h2>😈 Oops!</h2>
-    <p>Wrong answer 💔</p>
+    <h2 id="popupText">😈 Think again</h2>
   </div>
 </div>
 
 <script>
-/* Floating hearts */
-function createAnimations() {
-  const a = document.getElementById("animations");
-  a.innerHTML = "";
-  for (let i = 0; i < 25; i++) {
-    const h = document.createElement("div");
-    h.className = "heart";
-    h.innerHTML = "❤️";
-    h.style.left = Math.random() * 100 + "%";
-    h.style.animationDuration = 5 + Math.random() * 5 + "s";
+/* Background hearts */
+function createAnimations(){
+  const a=document.getElementById("animations");
+  a.innerHTML="";
+  for(let i=0;i<25;i++){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="❤️";
+    h.style.left=Math.random()*100+"%";
+    h.style.animationDuration=5+Math.random()*5+"s";
     a.appendChild(h);
-
-    const p = document.createElement("div");
-    p.className = "petal";
-    p.innerHTML = "🌹";
-    p.style.left = Math.random() * 100 + "%";
-    p.style.animationDuration = 7 + Math.random() * 6 + "s";
-    a.appendChild(p);
   }
 }
 createAnimations();
 
-/* Confetti */
-function confettiExplosion() {
-  for (let i = 0; i < 120; i++) {
-    const c = document.createElement("div");
-    c.className = "confetti";
-    c.style.left = Math.random() * 100 + "%";
-    c.style.background =
-      ["#ff4d6d","#ffd166","#06d6a0","#118ab2","#ef476f"]
-      [Math.floor(Math.random()*5)];
-    c.style.animationDuration = 2 + Math.random() * 2 + "s";
-    document.body.appendChild(c);
-    setTimeout(() => c.remove(), 4000);
-  }
+/* Popup */
+function showPopup(text){
+  popupText.innerText=text;
+  popup.style.display="flex";
+  setTimeout(()=>popup.style.display="none",5000);
 }
 
 /* Quiz */
-let score = 0;
-let qIndex = 0;
+let score=0,qIndex=0;
 
-const questions = [
+const questions=[
   {
-    text: "What is the first thing I brought you? 💝",
-    options: ["🍫 Chocolates", "🍦 Ice Creams", "⌚ Watch"],
-    correct: 0
+    text:"What is the first thing I brought you? 💝",
+    options:["🍫 Chocolates","🍦 Ice Creams","⌚ Watch"],
+    correct:0
   },
   {
-    text: "When I first said I love you 💌",
-    options: ["👨‍💻 Working", "🚆 Travelling", "🎬 Movie"],
-    correct: 1
+    text:"When I first said I love you 💌",
+    options:["👨‍💻 Working","🚆 Travelling","🎬 Movie"],
+    correct:1
   },
   {
-    text: "Why did I fall for you? 🥹",
-    options: ["💔 Loneliness", "🙃 No one else", "🧸 YOU"],
-    correct: 2
+    text:"Why did I fall for you? 🥹",
+    options:["💔 Loneliness","🙃 No one else","🧸 YOU"],
+    correct:2
   },
   {
-    text: "Where was this photo taken? 📸",
-    image: "PASTE_YOUR_IMAGE_LINK_HERE",
-    options: ["🏨 Restaurant", "🏠 Room", "🏫 College"],
-    correct: 1
+    text:"Where was this photo taken? 📸",
+    image:"PASTE_IMAGE_LINK_HERE",
+    options:["🏨 Restaurant","🏠 Room","🏫 College"],
+    correct:1
   }
 ];
 
-function loadQuestion() {
-  const q = questions[qIndex];
-  let html = `<p>${q.text}</p>`;
-  if (q.image) html += `<img src="${q.image}">`;
-  q.options.forEach((o, i) => {
-    html += `<button onclick="check(${i})">${o}</button>`;
+function loadQuestion(){
+  const q=questions[qIndex];
+  let html=`<p>${q.text}</p>`;
+  if(q.image)html+=`<img src="${q.image}">`;
+  q.options.forEach((o,i)=>{
+    html+=`<button onclick="check(${i})">${o}</button>`;
   });
-  content.innerHTML = html;
+  content.innerHTML=html;
 }
 
-function check(i) {
-  if (i === questions[qIndex].correct) {
+function check(i){
+  if(i===questions[qIndex].correct){
     score++;
-    scoreEl.innerText = `Score: ${score} / 4`;
-  } else {
-    popup.style.display = "flex";
-    setTimeout(() => popup.style.display = "none", 5000);
+    scoreEl.innerText=`Score: ${score} / 4`;
+    content.innerHTML=`<div class="correct-heart">❤️</div>`;
+  }else{
+    showPopup("😈 Wrong! Try again");
   }
-
-  setTimeout(() => {
+  setTimeout(()=>{
     qIndex++;
-    qIndex < questions.length ? loadQuestion() : askValentine();
-  }, 900);
+    qIndex<questions.length?loadQuestion():askValentine();
+  },1000);
 }
 
-const content = document.getElementById("content");
-const scoreEl = document.getElementById("score");
-const popup = document.getElementById("popup");
+const content=document.getElementById("content");
+const scoreEl=document.getElementById("score");
+const popup=document.getElementById("popup");
+const popupText=document.getElementById("popupText");
 
-/* Valentine question */
-function askValentine() {
-  app.innerHTML = `
+/* Valentine */
+function askValentine(){
+  app.innerHTML=`
     <h2>Will you be my Valentine forever? 💖</h2>
     <button onclick="yes()">YES 😍</button>
     <button id="noBtn">NO 🙈</button>
   `;
-
-  const noBtn = document.getElementById("noBtn");
-  noBtn.addEventListener("mouseover", () => {
-    noBtn.style.position = "fixed";
-    noBtn.style.left = Math.random() * 85 + "vw";
-    noBtn.style.top = Math.random() * 85 + "vh";
+  const noBtn=document.getElementById("noBtn");
+  noBtn.addEventListener("mouseover",()=>{
+    noBtn.style.position="fixed";
+    noBtn.style.left=Math.random()*85+"vw";
+    noBtn.style.top=Math.random()*85+"vh";
   });
 }
 
-/* Typing effect */
-function typeText(el, text, speed = 80) {
-  let i = 0;
-  el.innerHTML = "";
-  const t = setInterval(() => {
-    el.innerHTML += text.charAt(i);
-    i++;
-    if (i >= text.length) clearInterval(t);
-  }, speed);
+/* Typing */
+function typeText(el,text,speed=80,cb){
+  let i=0;el.innerHTML="";
+  const t=setInterval(()=>{
+    el.innerHTML+=text.charAt(i++);
+    if(i>=text.length){clearInterval(t);cb&&cb();}
+  },speed);
 }
 
-/* YES page */
-function yes() {
-  document.body.innerHTML = `
+/* YES PAGE */
+function yes(){
+  document.body.innerHTML=`
     <div class="animations" id="animations"></div>
     <div class="box">
       <h2>💖 She Said YES 💖</h2>
-      <p>
-        From silly fights to endless laughs,<br>
-        you became my favorite part of every day 🥹❤️
-      </p>
-      <p>
-        I may not be perfect,<br>
-        but choosing you will always be my best decision.
-      </p>
-      <p><strong id="typedName"></strong></p>
-
-      <p style="font-size:14px; opacity:0.7;">
-        (P.S. There is a secret message below 👀 <br>
-        for secret message to unlock u must answer this first)
-      </p>
-
-      <button onclick="unlockSecret()">Tap here 💌</button>
-
-      <div id="lock" style="display:none;">
-        <p>How many months we are in a relationship? 🥹</p>
-        <input id="pass" placeholder="Enter number ❤️">
-        <br><br>
-        <button onclick="checkPassword()">Unlock 💖</button>
-      </div>
-
-      <p id="secret" style="display:none; margin-top:15px; color:#ff4d6d;">
-        Even when life gets messy — I still choose you.
-        Every time. Forever. ♾️❤️
-      </p>
+      <p>From silly fights to endless laughs,<br>you became my favorite part of every day 🥹❤️</p>
+      <p>I may not be perfect,<br>but choosing you will always be my best decision.</p>
+      <p id="typed"></p>
+      <button onclick="secretPage()">Tap here 💌</button>
     </div>
   `;
   createAnimations();
-  confettiExplosion();
-
-  typeText(
-    document.getElementById("typedName"),
-    "Thank you for being my Valentine Bhuuu💕",
-    80
-  );
+  typeText(document.getElementById("typed"),
+    "Thank you for being my Valentine Bhuuu💕",80);
 }
 
-function unlockSecret() {
-  document.getElementById("lock").style.display = "block";
+/* SECRET PAGE */
+function secretPage(){
+  document.body.innerHTML=`
+    <div class="box">
+      <h2>🔐 Secret Lock</h2>
+      <p>How many months we are in a relationship? 🥹</p>
+      <input id="pass">
+      <br><br>
+      <button onclick="checkPass()">Unlock 💖</button>
+    </div>
+  `;
 }
 
-function checkPassword() {
-  const val = document.getElementById("pass").value.trim();
-  if (val === "4") {
-    document.getElementById("secret").style.display = "block";
-  } else {
-    alert("😈 Wrong! Think again!");
+function checkPass(){
+  if(pass.value==="4"){
+    finalMessage();
+  }else{
+    showPopup("😈 Think again");
   }
+}
+
+/* FINAL */
+function finalMessage(){
+  document.body.innerHTML=`
+    <div class="animations" id="animations"></div>
+    <div class="box">
+      <h2 class="float-text">Hendthi maaa…</h2>
+      <p class="float-text">even in every lifetime, I choose you 💖♾️</p>
+    </div>
+  `;
+  createAnimations();
 }
 
 loadQuestion();
