@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+/* Animations layer */
+.animations {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.heart, .petal {
+  position: absolute;
+}
+
+.heart {
+  font-size: 20px;
+  animation: floatUp linear infinite;
+}
+
+.petal {
+  font-size: 22px;
+  animation: fallDown linear infinite;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(100vh); opacity: 1; }
+  to { transform: translateY(-10vh); opacity: 0; }
+}
+
+@keyframes fallDown {
+  from { transform: translateY(-10vh) rotate(0deg); }
+  to { transform: translateY(110vh) rotate(360deg); }
+}
+
+/* Main box */
+.box {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  max-width: 420px;
+  margin: auto;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: fadeIn 0.6s ease;
+  position: relative;
+  z-index: 1;
+}
+
+button {
+  width: 90%;
+  max-width: 300px;
+  padding: 14px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 25px;
+  background: #ff4d6d;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+img {
+  width: 100%;
+  border-radius: 12px;
+  margin: 15px 0;
+}
+
+#noBtn {
+  position: absolute;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.bounce {
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: red;
+  top: -10px;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  to {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="animations" id="animations"></div>
+
+<div class="box" id="app">
+  <h2>Valentine Quiz 💘</h2>
+  <h3 id="score">Score: 0 / 4</h3>
+  <div id="content"></div>
+</div>
+
+<script>
+// 💕 Hearts & 🌹 petals
+function createAnimations() {
+  const container = document.getElementById("animations");
+  container.innerHTML = "";
+  for (let i = 0; i < 25; i++) {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "%";
+    heart.style.animationDuration = 5 + Math.random() * 5 + "s";
+    container.appendChild(heart);
+
+    const petal = document.createElement("div");
+    petal.className = "petal";
+    petal.innerHTML = "🌹";
+    petal.style.left = Math.random() * 100 + "%";
+    petal.style.animationDuration = 7 + Math.random() * 6 + "s";
+    container.appendChild(petal);
+  }
+}
+createAnimations();
+
+// 🎉 Confetti explosion
+function confettiExplosion() {
+  for (let i = 0; i < 120; i++) {
+    const confetti = document.createElement("div");
+    confetti.className = "confetti";
+    confetti.style.left = Math.random() * 100 + "%";
+    confetti.style.background =
+      ["#ff4d6d","#ffd166","#06d6a0","#118ab2","#ef476f"]
+      [Math.floor(Math.random()*5)];
+    confetti.style.animationDuration = 2 + Math.random() * 2 + "s";
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 4000);
+  }
+}
+
+// Quiz logic
+let score = 0;
+let qIndex = 0;
+
+const questions = [
+  {
+    text: "Who loves you the most?",
+    options: ["Me 😌", "You 😜", "Both ❤️"],
+    correct: 0
+  },
+  {
+    text: "What do we do best together?",
+    options: ["Laugh ❤️", "Fight 😂", "Ignore 😏"],
+    correct: 0
+  },
+  {
+    text: "Who is cuter?",
+    options: ["You 🥰", "Me 😎", "Both 💖"],
+    correct: 2
+  },
+  {
+    text: "Where did I take this photo?",
+    image: "memory.jpg",
+    options: ["Beach 🌊", "Cafe ☕", "Park 🌳"],
+    correct: 1
+  }
+];
+
+function loadQuestion() {
+  const q = questions[qIndex];
+  let html = `<p>${q.text}</p>`;
+  if (q.image) html += `<img src="${q.image}">`;
+  q.options.forEach((opt, i) => {
+    html += `<button onclick="check(${i})">${opt}</button>`;
+  });
+  document.getElementById("content").innerHTML = html;
+}
+
+function check(i) {
+  if (i === questions[qIndex].correct) {
+    score++;
+    document.getElementById("score").innerText = `Score: ${score} / 4`;
+    document.getElementById("content").innerHTML = "<h1>❤️</h1>";
+    setTimeout(() => {
+      qIndex++;
+      qIndex < questions.length ? loadQuestion() : showGift();
+    }, 700);
+  } else {
+    alert("Wrong 😈 Try again!");
+  }
+}
+
+function showGift() {
+  document.getElementById("app").innerHTML = `
+    <h2>🎉 Congratulations!</h2>
+    <p>A gift is waiting for you 💝</p>
+    <button class="bounce" onclick="valentine()">Open Gift 🎁</button>
+  `;
+}
+
+function valentine() {
+  document.body.innerHTML = `
+    <div class="animations" id="animations"></div>
+    <div class="box">
+      <h2>Will you be my Valentine forever? 💖</h2>
+      <button onclick="yes()">YES 😍</button>
+      <button id="noBtn">NO 🙈</button>
+    </div>
+  `;
+  createAnimations();
+  document.getElementById("noBtn").addEventListener("mouseover", e => {
+    e.target.style.left = Math.random() * 70 + "%";
+    e.target.style.top = Math.random() * 70 + "%";
+  });
+}
+
+function yes() {
+  confettiExplosion();
+  document.body.innerHTML = `
+    <div class="animations" id="animations"></div>
+    <div class="box">
+      <h2>💖 She Said YES 💖</h2>
+      <p>
+        From silly fights to endless laughs,<br>
+        you became my favorite part of every day 🥹❤️
+      </p>
+      <p>
+        I may not be perfect,<br>
+        but choosing you will always be my best decision.
+      </p>
+      <p><strong>Thank you for being my Valentine 💕</strong></p>
+
+      <p style="font-size:14px; opacity:0.7;">
+        (P.S. There is a secret message below 👀)
+      </p>
+
+      <button onclick="revealSecret()">Tap here 💌</button>
+
+      <p id="secret" style="display:none; margin-top:15px; color:#ff4d6d;">
+        Even when life gets messy — I still choose you.
+        Every time. Forever. ♾️❤️
+      </p>
+    </div>
+  `;
+  createAnimations();
+}
+
+function revealSecret() {
+  document.getElementById("secret").style.display = "block";
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
